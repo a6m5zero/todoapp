@@ -1,0 +1,48 @@
+{% load static %}
+<html>
+    <head>
+        <title>{% block title %}Туду-дуду{% endblock %}</title>
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+        <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+            {% block extra_head %}
+            {% endblock %}
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="side_bar col">
+                    {% block side_bar %}
+                        {% if user.is_authenticated %}
+                        <p>{{ user.first_name }}</p>
+                        <!-- {% if user.profile.avatar %}
+                            <img src="{{ user.profile.avatar.url }}" class="img-fluid">
+                        {% endif %} -->
+
+                        <ul>
+                            <li><a href="{% url "edit" %}">профиль</a></li>
+                            <li><a href="{% url "tasks:create" %}">добавить задачу</a></li>
+                            <li><a href="{% url "tasks:list" %}">задачи</a></li>
+                            <li><a href="{% url "logout" %}">выйти</a></li>
+                        </ul>
+                        {% endif %}
+                        
+                    {% endblock %}
+                </div>
+                <div class="main_content col-8">
+                    {% if messages %}
+                        <div class="row">
+                            <ul class="messages">
+                            {% for message in messages %}
+                            <li class = "alert alert-{{message.tags}}">{{ message }}</li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    {% block main_content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

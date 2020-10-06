@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Задачи на день! {% endblock %}
+{% block extra_head %}
+    <script src="{% static 'js/mainscript.js' %}"></script>
+{% endblock %}
+{% block main_content %}
+            <h1>Текущие задачи</h1>
+            <p><a href="{% url "tasks:export" %}">ЭКСПОРТИРОВАТЬ ЗАДАЧИ НА Е-МАИЛ</a></p>
+            <br>
+            <p>Фильтрация: <input id='completed_filter' type='checkbox' />Убрать выполненные. 
+                <input id='priority_filter' type='checkbox' />Сортировать по приоритету. </p>
+            <div class = 'invisible' id ='filter_d'>
+                
+                
+                <input class='checkbox'  type='checkbox' />
+
+            </div>
+            
+
+
+            <ul id="todo-list">
+                {% for task in tasks %}
+                {% if task.is_completed %}
+                <li class="completed">
+                <input class='checkbox' data-uid={{ task.id }} type='checkbox' disabled='disabled' checked='checked'/>
+                {% else %}
+                <li>
+                <input class='checkbox' data-uid={{ task.id }} type='checkbox' />
+                {% endif %}
+                    {% if task.priority == task.PRIORITY_HIGH %}
+                        <span class="badge badge-pill badge-danger">&nbsp;</span>
+                    {% elif task.priority == task.PRIORITY_MEDIUM %}
+                        <span class="badge badge-pill badge-secondary">&nbsp;</span>
+                    {% elif task.priority == task.PRIORITY_LOW %}
+                        <span class="badge badge-pill badge-success">&nbsp;</span>
+                    {% endif %}
+                        <a href={% url "tasks:details" task.id %}>{{ task }}</a>
+                        <a class="remove" href={% url "tasks:delete" task.id %}>X</a>
+                    <hr/>
+                </li>
+                {% endfor %}
+            </ul>
+{% endblock %}
+         

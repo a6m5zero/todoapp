@@ -1,0 +1,53 @@
+.container {
+margin: 0 auto;
+min-width: 300px;
+width: 30%;
+text-align: left;
+color: #3b3b3b;
+font-weight: bold;
+}
+form.task-create {
+outline: 0;
+height: 36px;
+margin-top: 5%;
+}
+form.task-create > input[type="text"] {
+width: 65%;
+height: 32px;
+font-size: 18px;
+font-weight: normal;
+padding-left: 10px;
+display:inline-block;
+
+}
+.add {
+    outline: 0;
+    width: 34%;
+    height: 36px;
+    color: #fff;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    background-color: #3b3b3b;
+    margin-top: 10px;
+}
+ul {
+padding: 0;
+text-align: left;
+list-style: none;
+}
+hr {
+border-bottom: 0;
+margin: 15px 0;}
+
+input[type="checkbox"] { width: 30px; }
+
+.remove {
+float: right;
+cursor: pointer;
+}
+.completed { text-decoration: line-through; }
+
+#zagolovok {
+margin-top: 100px
+}
