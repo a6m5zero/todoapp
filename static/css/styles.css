@@ -51,3 +51,12 @@ cursor: pointer;
 #zagolovok {
 margin-top: 100px
 }
+
+.i {
+    background-image:url('../icons/trello2.svg');
+    background-size: cover;
+    width:17px; 
+    height:17px; 
+    display:inline-block;
+    vertical-align:bottom;
+}

@@ -9,6 +9,7 @@
         </li>
         <li>Создана: {{ object.created|date:"Y-b-d H:i" }}</li>
         <li>Последнее изменение: {{ object.updated|date:"Y-b-d H:i"}}</li>
+        <li>Тэги: {{ object.tags.all }}</li>
         <li><i class="far fa-edit"></i>&nbsp;<a href="{% url "tasks:edit" pk=object.pk %}">Редактировать</a></li>
     </ul>
     <a href="{% url "tasks:list" %}">Назад к списку</a>

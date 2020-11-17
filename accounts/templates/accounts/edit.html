@@ -3,10 +3,19 @@
 {% block main_content %}
 <h1>Изменить профиль</h1>
 <p>Используйте форму ниже чтобы что-то поменять в профиле:</p>
+<div class="row">
+<div class="col mx-auto">
 <form action="." method="post" enctype="multipart/form-data">
+
 {{ user_form.as_p }}
 {{ profile_form.as_p }}
+<p>Добавление токена позволяет синхронизировать ваши задачи с сервисом досок задач Trello. 
+<a href={{ trello_url }}>Получить токен!</a>
+</p>
+
 {% csrf_token %}
 <button type="submit">Сохранить</button>
 </form>
+</div>
+</div>
 {% endblock %}

@@ -29,4 +29,4 @@ class UserEditForm(forms.ModelForm):
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ("birthdate",)
+        fields = ("birthdate", "trello_hash")

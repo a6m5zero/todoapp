@@ -3,11 +3,15 @@
 
 {% block title %} Задачи на день! {% endblock %}
 {% block extra_head %}
+    <script> var advice_url = "/tasks/get_trello_boards/{{trello_hash}}" </script> 
     <script src="{% static 'js/mainscript.js' %}"></script>
+    <script src="{% static 'js/trelloimport.js' %}"></script>
 {% endblock %}
 {% block main_content %}
             <h1>Текущие задачи</h1>
             <p><a href="{% url "tasks:export" %}">ЭКСПОРТИРОВАТЬ ЗАДАЧИ НА Е-МАИЛ</a></p>
+            <p><a href="/" data-toggle="modal" data-target="#trelloModal">ИМПОРТ ЗАДАЧ ИЗ TRELLO<a></p>
+
             <br>
             <p>Фильтрация: <input id='completed_filter' type='checkbox' />Убрать выполненные. 
                 <input id='priority_filter' type='checkbox' />Сортировать по приоритету. </p>
@@ -35,6 +39,8 @@
                         <span class="badge badge-pill badge-secondary">&nbsp;</span>
                     {% elif task.priority == task.PRIORITY_LOW %}
                         <span class="badge badge-pill badge-success">&nbsp;</span>
+                    {% elif task.priority == task.FROM_TRELLO %}
+                        <span class="i">&nbsp;</span>
                     {% endif %}
                         <a href={% url "tasks:details" task.id %}>{{ task }}</a>
                         <a class="remove" href={% url "tasks:delete" task.id %}>X</a>
@@ -42,5 +48,33 @@
                 </li>
                 {% endfor %}
             </ul>
+
+        <div class = "modal fade" id = 'trelloModal' tabindex="-1" role="dialog", aria-labelledby="trelloModal", aria-hidden="true">
+            <div class = "modal-dialog modal-lg modal-dialog-centered", role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                     <h5 class="modal-title" id = "trelloModallabel">Выберите Доску из которой поизводить импорт</h5>
+                    <button class = 'close' type = "button" data-dismiss = "modal" aria-label="Close"> 
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <form action="{% url "tasks:trello" %}" method="POST" id = "trello_board">
+                            {% csrf_token %}
+                            <select name="select" id="select_board"></select>
+                              
+                        </form>
+                    </div>
+                                        
+                    <div class="modal-footer">
+                        <button type="button" id = "import_trello_btn" class="btn btn-primary">Импортировать</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    </div>
+                    
+
+                </div>
+            </div>
+        </div>
 {% endblock %}
          

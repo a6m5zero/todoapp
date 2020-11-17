@@ -5,6 +5,8 @@
         <link rel="stylesheet" href="{% static 'css/styles.css' %}">
         <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
         <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.js' %}"></script>
+
             {% block extra_head %}
             {% endblock %}
     </head>
@@ -20,10 +22,10 @@
                         {% endif %} -->
 
                         <ul>
-                            <li><a href="{% url "edit" %}">профиль</a></li>
-                            <li><a href="{% url "tasks:create" %}">добавить задачу</a></li>
-                            <li><a href="{% url "tasks:list" %}">задачи</a></li>
-                            <li><a href="{% url "logout" %}">выйти</a></li>
+                            <li><a href="{% url "edit" %}">Профиль</a></li>
+                            <li><a href="{% url "tasks:create" %}">Добавить задачу</a></li>
+                            <li><a href="{% url "tasks:list" %}">Задачи</a></li>
+                            <li><a href="{% url "logout" %}">Выйти</a></li>
                         </ul>
                         {% endif %}
                         

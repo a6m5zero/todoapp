@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from tasks.models import ToDoItem
+from accounts.models import Profile
 from tasks.forms import AddTaskForm, TodoItemForm, TodoItemExportForm
 from django.views import View
 from django.views.generic import ListView
@@ -9,13 +10,16 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.core.mail import send_mail
 from django.conf import settings
+from tasks import trelloAPI
+
+TRELLO__API = "cded61b0ea3c8c0fc639dc3faee0abf8"
 
 # Create your views here.
 def index(request):
-    return HttpResponse("HELLO BITCH. I AM RUNNIG THIS SHEAT СУКА БЛЯТЬ")     
+    return HttpResponse(tasks)     
 
 def task_list(request):
     all_tasks = ToDoItem.objects.all()
@@ -52,12 +56,46 @@ def add_task(request):
         t.save()
     return HttpResponseRedirect(reverse("tasks:list"))
 
+def trello_import(request):
+    if request.method == "POST":
+        trello_hash = Profile.objects.get(user = request.user)
+        if trello_hash.trello_hash:
+            print(trello_hash.trello_hash)
+            trello = trelloAPI.TrelloAPI(TRELLO__API, trello_hash.trello_hash)
+            cards = trello.get_cards_on_board(request.POST['select'])
+            for (k,v) in cards.items():
+                trello_task = ToDoItem(description=v, is_completed = False, owner = request.user, priority = 0)
+                trello_task.save()
 
-class TaskListView(LoginRequiredMixin, ListView):
-    model = ToDoItem
-    context_object_name = "tasks"
-    template_name = "tasks/list.html"
+            # Eсли в профиле указан API хэш на трелло. 
+            return HttpResponseRedirect(reverse("tasks:list"))
+        else:
+            messages.warning(request, "Укажите Trello ключ в профиле.")
+            return HttpResponseRedirect(reverse("tasks:list"))
 
+ 
+def trello_boards(request, slug):
+    trello = trelloAPI.TrelloAPI(TRELLO__API, slug)
+    boards = trello.get_boards()
+    print(boards)
+    return JsonResponse(boards)
+    
+
+
+@login_required
+def edit(request):
+    if request.method == "POST":
+        user_form = UserEditForm(instance=request.user, data=request.POST)
+        profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST,files=request.FILES)
+        profile_form.data._mutable = True
+        profile_form.data['trello_hash'] = re.sub(r'[^a-zA-Z0-9 ]',r'',profile_form.data['trello_hash'])
+        profile_form.data._mutable = False
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+    else:
+        user_form = UserEditForm(instance=request.user)
     def get_queryset(self):
         u = self.request.user
         return u.tasks.all()
@@ -67,10 +105,9 @@ class TaskListView_c(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         pass
     def get(self, request, *args, **kwargs):
-        tasks = ToDoItem.objects.all()
-        
-
-
+        tasks = ToDoItem.objects.filter(owner=self.request.user)
+        trello_hash = Profile.objects.get(user = request.user)
+        return render(request, "tasks/list.html", {"tasks": tasks , "trello_hash": trello_hash.trello_hash})
 
 
 class TaskCreateView(LoginRequiredMixin, View):
